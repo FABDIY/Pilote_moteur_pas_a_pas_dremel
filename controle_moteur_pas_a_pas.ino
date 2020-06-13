@@ -16,8 +16,12 @@ volatile int VitesseCourante = 0;
 Thread motorThread = Thread();
 void motorCallback()
 {
-	if (VitesseCourante > 31) // https://www.arduino.cc/reference/en/language/functions/advanced-io/tone/
-		tone(stepPin, VitesseCourante, 5);
+	// le signal a applique au moteur est obtenu avec la formule suivante :
+	// on souhaite appliquer une frequence en Hz, alors que notre commande est en rpm.
+	// du coup, on convertir le rpm souhaite en pas par seconde a envoyer, soit des Hz.
+	int motorStepFreq = (VitesseCourante*stepsByRevolution)/60;
+	if (motorStepFreq > 31) // https://www.arduino.cc/reference/en/language/functions/advanced-io/tone/
+		tone(stepPin, motorStepFreq, 5);
 	else
 		noTone(stepPin);
 }
